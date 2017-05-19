@@ -1,2 +1,1 @@
-# Metz
-A next gen documentation generator
+![](metz.png)
