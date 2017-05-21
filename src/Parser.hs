@@ -1,6 +1,7 @@
 module Parser where
 
-import Text.Parsec (try)
+import qualified Text.Parsec (try,parse)
+import Text.Parsec.Error (ParseError)
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Expr as Ex
 
@@ -23,9 +24,14 @@ factor =
   try inputParser  <|>
   try outputParser <|>
   try blockParser
+  where
+    try = Text.Parsec.try
 
 expr :: Parser Expression
 expr = Ex.buildExpressionParser [] factor
 
 expressionParser :: Parser [Expression]
 expressionParser = commaSep1 expr
+
+parse :: String -> Either ParseError [Expression]
+parse =  Text.Parsec.parse expressionParser "" 

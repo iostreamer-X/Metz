@@ -9,3 +9,6 @@ data Expression
 isAnnotation :: Expression -> Bool
 isAnnotation (Annotation _) = True
 isAnnotation _ = False
+
+isExpression :: Expression -> Bool
+isExpression = not.isAnnotation
