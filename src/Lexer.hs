@@ -3,9 +3,11 @@ module Lexer where
 import Text.Parsec.String (Parser)
 import Text.Parsec.Language (emptyDef)
 import qualified Text.Parsec.Token as Token
+import Text.Parsec (char,eof)
+import Text.Parsec.Combinator (lookAhead)
 
-import Control.Applicative ((<*))
-
+import Control.Monad (void)
+import Control.Applicative ((<*), (<|>))
 lexer :: Token.TokenParser ()
 lexer = Token.makeTokenParser style
   where
@@ -29,4 +31,4 @@ output :: Parser String
 output = identifier <* (reserved "is" >> reserved "output")
 
 block :: Parser ()
-block = reserved "block"
+block = reserved "block" <* (eof <|> void (lookAhead $ char ','))
