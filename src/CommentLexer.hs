@@ -3,18 +3,18 @@ module CommentLexer where
 metzLine :: Char
 metzLine = '-'
 
-metzBlock :: String -> [String]
-metzBlock [] = []
-metzBlock (h:str)
+metzBlocks :: String -> [String]
+metzBlocks [] = []
+metzBlocks (h:str)
   |h == metzLine = getBlocks
-  |otherwise     = metzBlock str
+  |otherwise     = metzBlocks str
   where
     getBlocks = case metzBlock' [] str of
-                  Just (block, rest) -> block : metzBlock rest
+                  Just (block, rest) -> block : metzBlocks rest
                   Nothing            -> [] 
 
 metzBlock' :: String -> String -> Maybe (String,String)
 metzBlock' _ [] = Nothing
 metzBlock' bucket (h':str')
   |h' == metzLine = Just (bucket,str')
-  |otherwise      = metzBlock' (bucket++[h']) str'  
+  |otherwise      = metzBlock' (bucket++[h']) str'

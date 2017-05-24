@@ -1,4 +1,4 @@
-module Parser where
+module Parser(parse) where
 
 import qualified Text.Parsec (try,parse)
 import Text.Parsec.Error (ParseError)
@@ -8,7 +8,7 @@ import qualified Text.Parsec.Expr as Ex
 import Lexer
 import Syntax
 
-import Control.Applicative ((<$>), (<|>))
+import Control.Applicative ((<|>))
 
 inputParser :: Parser Expression
 inputParser = Input <$> input

@@ -7,7 +7,7 @@ import Text.Parsec (char,eof)
 import Text.Parsec.Combinator (lookAhead)
 
 import Control.Monad (void)
-import Control.Applicative ((<*), (<|>))
+import Control.Applicative ((<|>))
 lexer :: Token.TokenParser ()
 lexer = Token.makeTokenParser style
   where
