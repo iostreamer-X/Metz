@@ -14,11 +14,11 @@ parseComment comment = validate $ if all isRight blocks then Right $ getExpressi
   where
     blocks = map parse . metzBlocks $ comment
     validate ex@(Right expressions) = if any isExpression expressions then ex else noExpressionError comment
-    validate er@(Left _) = er
+    validate errors = errors
     noExpressionError comm = Left [newErrorMessage (Expect "an expression") (initialPos comm)]
 
 getExpressions :: [Either t [Expression]] -> [Expression]
 getExpressions = concatMap (\(Right expr) -> expr) 
 
 getErrors :: [Either ParseError t] -> [ParseError]
-getErrors = map (\(Left err) -> err)   
+getErrors = map (\(Left err) -> err)
