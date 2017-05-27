@@ -1,4 +1,4 @@
-module Parser(parse) where
+module Parser(parse,expressionParser) where
 
 import qualified Text.Parsec (try,parse)
 import Text.Parsec.Error (ParseError)
@@ -17,7 +17,7 @@ outputParser :: Parser Expression
 outputParser = Output <$> output
 
 blockParser :: Parser Expression
-blockParser = block >>= \_ -> return $ Annotation Block
+blockParser = const (Annotation Block) <$> block
 
 factor :: Parser Expression
 factor = 
