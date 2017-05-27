@@ -7,10 +7,11 @@ import CommentLexer
 import Parser
 import Syntax
 
-parseComment :: String -> Either ParseError [Expression]
-parseComment comment = validate $ concat <$> sequence blocks
+parseComment :: String -> String -> Either ParseError [Expression]
+parseComment code commentStart = validate $ concat <$> sequence blocks
   where
-    blocks = map parse . metzBlocks $ comment
-    validate ex@(Right expressions) = if any isExpression expressions then ex else noExpressionError comment
+    blocks = map parse . metzBlocks $ if isComment code commentStart then code else []
+    validate ex@(Right []) = ex
+    validate ex@(Right expressions) = if any isExpression expressions then ex else justAnnotationError code
     validate err = err
-    noExpressionError comm = Left $ newErrorMessage (Expect "an expression") (initialPos comm)
+    justAnnotationError comm = Left $ newErrorMessage (Expect "an expression along with the annotation") (initialPos comm)
