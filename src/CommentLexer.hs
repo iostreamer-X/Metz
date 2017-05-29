@@ -1,12 +1,7 @@
 module CommentLexer where
 
-import Data.List (isPrefixOf)
-
 metzLine :: Char
 metzLine = '-'
-
-isComment :: String -> String -> Bool
-isComment comment commentStart = commentStart `isPrefixOf` comment
 
 metzBlocks :: String -> [String]
 metzBlocks [] = []
