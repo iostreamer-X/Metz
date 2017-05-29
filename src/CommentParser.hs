@@ -8,8 +8,8 @@ import Parser
 import Syntax
 import FileSyntax
 
-parseComment :: Line -> Either ParseError [Expression]
-parseComment (Comment comment) = validate $ concat <$> sequence blocks
+parseComment :: Line Comment -> Either ParseError [Expression]
+parseComment (Line comment) = validate $ concat <$> sequence blocks
   where
     blocks = map parse $ metzBlocks comment
     validate ex@(Right []) = ex

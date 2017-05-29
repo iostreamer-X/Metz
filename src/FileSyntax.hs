@@ -1,4 +1,7 @@
 module FileSyntax where
 
-newtype Block = Block { getBlock :: [Line] } deriving (Eq, Show)
-data Line = Code String | Comment String deriving (Eq, Show)
+newtype Block a = Block { getBlock :: [Line a] } deriving (Show)
+
+newtype Line a = Line String deriving (Show)
+data Code
+data Comment

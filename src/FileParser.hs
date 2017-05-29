@@ -11,12 +11,9 @@ isComment comment commentStart = commentStart `isPrefixOf` comment
 splitToBlocks :: String -> [String]
 splitToBlocks = splitOn "\n\n"
 
-lineParser :: String -> String -> Line
-lineParser commentStart str = if isComment str commentStart then Comment str else Code str 
+blockParser :: [[String]] -> [Block a]
+blockParser rawLines = map Block [map Line rl |rl <- rawLines ]
 
-blockParser :: String -> [[String]] -> [Block]
-blockParser commentStart rawLines = map Block [map (lineParser commentStart) rl |rl <- rawLines ]
-
-parseFile :: String -> FilePath ->  IO [Block]
-parseFile commentStart path = blockParser commentStart . map lines . splitToBlocks <$> readFile path
+parseFile :: FilePath ->  IO [Block a]
+parseFile path = blockParser . map lines . splitToBlocks <$> readFile path
 
