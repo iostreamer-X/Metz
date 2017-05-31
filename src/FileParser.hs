@@ -1,9 +1,12 @@
 module FileParser where
 
+import Text.Parsec.Error (ParseError)
 import Data.List (isPrefixOf,partition)
 import Data.List.Split
 
 import FileSyntax
+import qualified Syntax
+import CommentParser
 
 isComment :: String -> String -> Bool
 isComment commentStart comment = commentStart `isPrefixOf` comment
@@ -13,9 +16,6 @@ splitToBlocks = splitOn "\n\n"
 
 blockParser :: [[String]] -> [Block a]
 blockParser rawLines = map Block [map Line $ filter (not.null) rl |rl <- rawLines, not $ null rl ]
-
-parseFile :: FilePath ->  IO [Block a]
-parseFile path = blockParser . map lines . splitToBlocks <$> readFile path
 
 partitionBlocks :: String -> [Block t] -> [(Block Comment, Block Code)]
 partitionBlocks commentStart = filter validator . map part
@@ -28,3 +28,16 @@ partitionBlocks commentStart = filter validator . map part
     validator (_, Block []) = False
     validator _             = True
 
+parseBlock :: Block Comment -> [Either ParseError [Syntax.Expression]]
+parseBlock = map parseComment . getBlock
+
+parseBlockPair :: (Block Comment, Block Code) -> ([Either ParseError [Syntax.Expression]], Block Code)
+parseBlockPair (commentBlock, codeBlock) = (parseBlock commentBlock, codeBlock)
+
+parseFile' :: FilePath ->  IO [Block a]
+parseFile' path = blockParser . map lines . splitToBlocks <$> readFile path
+
+parseFile :: String -> FilePath -> IO [([Either ParseError [Syntax.Expression]], Block Code)]
+parseFile commentStart path = filter notEmpty . map parseBlockPair . partitionBlocks commentStart <$> parseFile' path
+  where
+    notEmpty (exprs, _) = not $ all (== Right []) exprs

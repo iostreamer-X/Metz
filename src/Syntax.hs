@@ -1,10 +1,10 @@
 module Syntax where
 
-data Block = Block deriving (Show)
+data Block = Block deriving (Show,Eq)
 
 data Expression
   = Input String | Output String | Annotation Block
-    deriving (Show)
+    deriving (Show,Eq)
 
 isAnnotation :: Expression -> Bool
 isAnnotation (Annotation _) = True
