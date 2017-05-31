@@ -12,7 +12,7 @@ splitToBlocks :: String -> [String]
 splitToBlocks = splitOn "\n\n"
 
 blockParser :: [[String]] -> [Block a]
-blockParser rawLines = map Block [map Line rl |rl <- rawLines ]
+blockParser rawLines = map Block [map Line $ filter (not.null) rl |rl <- rawLines, not $ null rl ]
 
 parseFile :: FilePath ->  IO [Block a]
 parseFile path = blockParser . map lines . splitToBlocks <$> readFile path
