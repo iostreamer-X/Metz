@@ -34,10 +34,8 @@ parseBlock = map parseComment . getBlock
 parseBlockPair :: (Block Comment, Block Code) -> ([Either ParseError [Syntax.Expression]], Block Code)
 parseBlockPair (commentBlock, codeBlock) = (parseBlock commentBlock, codeBlock)
 
-parseFile' :: FilePath ->  IO [Block a]
-parseFile' path = blockParser . map lines . splitToBlocks <$> readFile path
-
 parseFile :: String -> FilePath -> IO [([Either ParseError [Syntax.Expression]], Block Code)]
-parseFile commentStart path = filter notEmpty . map parseBlockPair . partitionBlocks commentStart <$> parseFile' path
+parseFile commentStart path = filter notEmpty . map parseBlockPair . partitionBlocks commentStart <$> getBlocksFromFile path
   where
     notEmpty (exprs, _) = not $ all (== Right []) exprs
+    getBlocksFromFile = fmap (blockParser . map lines . splitToBlocks) . readFile
