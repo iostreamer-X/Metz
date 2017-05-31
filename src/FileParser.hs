@@ -18,9 +18,13 @@ parseFile :: FilePath ->  IO [Block a]
 parseFile path = blockParser . map lines . splitToBlocks <$> readFile path
 
 partitionBlocks :: String -> [Block t] -> [(Block Comment, Block Code)]
-partitionBlocks commentStart = map part
+partitionBlocks commentStart = filter validator . map part
   where
     part = uncurry mapLines . partition(\(Line l)-> isComment commentStart l) . getBlock
     mapLines l1 l2 = (Block $ map makeComment l1, Block $ map makeCode l2)
     makeComment (Line comm) = Line comm :: Line Comment
     makeCode (Line code) = Line code :: Line Code
+    validator (Block [], _) = False
+    validator (_, Block []) = False
+    validator _             = True
+
